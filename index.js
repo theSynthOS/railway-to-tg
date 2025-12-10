@@ -18,12 +18,13 @@ if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
 const app = express();
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const TELEGRAM_TOPIC_ID = process.env.TELEGRAM_TOPIC_ID || null;
 const PORT = process.env.PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 async function sendMessage(message, buttontext, buttonurl) {
-  await bot.telegram.sendMessage(TELEGRAM_CHAT_ID, message, {
+  const options = {
     parse_mode: "html",
     disable_web_page_preview: true,
     reply_markup: {
@@ -36,7 +37,13 @@ async function sendMessage(message, buttontext, buttonurl) {
         ],
       ],
     },
-  });
+  };
+
+  if (TELEGRAM_TOPIC_ID) {
+    options.message_thread_id = parseInt(TELEGRAM_TOPIC_ID);
+  }
+
+  await bot.telegram.sendMessage(TELEGRAM_CHAT_ID, message, options);
 }
 
 router.post("/webhook", (req, res) => {
