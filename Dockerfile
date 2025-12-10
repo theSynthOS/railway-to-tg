@@ -1,4 +1,4 @@
-FROM node:latest
+FROM oven/bun:latest
 
 # Create the app's directory
 RUN mkdir -p /usr/src/app
@@ -7,9 +7,7 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 
 # install dependencies
-RUN corepack enable
-RUN yarn
-RUN yarn install
+RUN bun install
 
 # Start the app.
-CMD ["yarn", "node", "index.js"]
+CMD ["bun", "run", "index.js"]
