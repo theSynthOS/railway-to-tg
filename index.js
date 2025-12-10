@@ -43,7 +43,12 @@ async function sendMessage(message, buttontext, buttonurl) {
     options.message_thread_id = parseInt(TELEGRAM_TOPIC_ID);
   }
 
-  await bot.telegram.sendMessage(TELEGRAM_CHAT_ID, message, options);
+  try {
+    await bot.telegram.sendMessage(TELEGRAM_CHAT_ID, message, options);
+    console.log("Message sent successfully");
+  } catch (error) {
+    console.error("Failed to send message:", error.message);
+  }
 }
 
 router.post("/webhook", (req, res) => {
